@@ -17,6 +17,8 @@ public class NetworkManager : MonoBehaviour {
 	//TODO see if we can have multiple characters
 	private const int MAX_PLAYERS = 4;
 
+
+	public AudioSource bgMusic;
 	public GameObject playerPrefab;
 	public GameObject AIPrefab;
 
@@ -131,6 +133,10 @@ public class NetworkManager : MonoBehaviour {
 	[RPC] void SetupWorld(){
 		this.gameObject.SetActive(false);
 		SpawnPlayer ();
+
+		if (bgMusic.isPlaying) {
+			bgMusic.Stop ();
+		}
 
 
 		if (Network.isServer) {
