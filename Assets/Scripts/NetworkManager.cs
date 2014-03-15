@@ -22,20 +22,54 @@ public class NetworkManager : MonoBehaviour {
 	public GameObject playerPrefab;
 	public GameObject AIPrefab;
 
+	private const int PLANE_SIZE = 50;
+	private const int Y_OFFSET = 1;
+
 	private Vector3 SpawnLocation(){
-
+		Vector3 randomLocation = Random.insideUnitSphere * PLANE_SIZE;
+		NavMeshHit hit;
+		NavMesh.SamplePosition(randomLocation, out hit, PLANE_SIZE, 1);
+		return hit.position;
 	}
 
-	private void SpawnPlayer()
+	private void SpawnPlayer(string id)
 	{
-		Network.Instantiate(playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+		Vector3 location = SpawnLocation ();
+		location.y = Y_OFFSET;
+		GameObject rename = (GameObject) Network.Instantiate(playerPrefab, location, Quaternion.identity, 0);
+		((Player)rename.GetComponent ("Player")).SetID (id);
 	}
 
-	private void SpawnAI(Vector3 location)
+	private const int NUM_AI = 50;
+
+	private void SpawnAI(string id)
 	{
+		Vector3 location = SpawnLocation ();
+		location.y = Y_OFFSET;
 		GameObject rename = (GameObject) Network.Instantiate(AIPrefab, location, Quaternion.identity, 0);
+		((Player)rename.GetComponent ("Player")).SetID (id);
+	}
 
-		rename.name += networkView.GetInstanceID();
+	[RPC] void SetupWorld(){
+		this.gameObject.SetActive(false); //do not use this camera
+		SpawnPlayer ( networkView.owner.guid ); //spawns my player
+		
+		if (bgMusic.isPlaying) {
+			bgMusic.Stop (); //stop music for now
+		}
+		
+		//initalize the score board on all machines
+		GameScore score = (GameScore) GameObject.Find("Town").GetComponent("GameScore");
+		score.StartGame ();
+		
+		if (Network.isServer) {
+			//server spawns all the AI
+			for(int i = 0; i < NUM_AI; i++){
+				SpawnAI ("" + i);
+			}
+			
+			networkView.RPC ("SetupWorld", RPCMode.OthersBuffered);
+		}
 	}
 
 	private void StartServer()
@@ -183,30 +217,6 @@ public class NetworkManager : MonoBehaviour {
 		} else if (Network.isClient) {
 			GUI.Box (new Rect (Screen.width / 2 - BUTTON_WIDTH / 2, Screen.height / 2, BUTTON_WIDTH, BUTTON_HEIGHT), 
 			         "Waiting to Start");
-		}
-	}
-
-	[RPC] void SetupWorld(){
-		this.gameObject.SetActive(false); //do not use this camera
-		SpawnPlayer (); //spwans my player
-		
-		if (bgMusic.isPlaying) {
-			bgMusic.Stop (); //stop music for now
-		}
-		
-		//initalize the score board on all machines
-		GameScore score = (GameScore) GameObject.Find("Town").GetComponent("GameScore");
-		score.StartGame ();
-		
-		if (Network.isServer) {
-			//server spawns all the AI
-			SpawnAI (new Vector3 (-1, 1, 15));
-			SpawnAI (new Vector3 (-5, 1, 23));
-			SpawnAI (new Vector3 (7, 1, 26));
-			SpawnAI (new Vector3 (2, 1, 29));
-			SpawnAI (new Vector3 (12, 1, 31));
-			
-			networkView.RPC ("SetupWorld", RPCMode.OthersBuffered);
 		}
 	}
 
