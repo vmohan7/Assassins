@@ -29,20 +29,16 @@ public class NetworkManager : MonoBehaviour {
 
 	private void SpawnAI(Vector3 location)
 	{
-		Network.Instantiate(AIPrefab, location, Quaternion.identity, 0);
+		GameObject rename = (GameObject) Network.Instantiate(AIPrefab, location, Quaternion.identity, 0);
+
+		rename.name += networkView.GetInstanceID();
 	}
-	
+
 	private void StartServer()
 	{
 		Network.InitializeServer(MAX_PLAYERS, 25000, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);
 		Network.maxConnections = MAX_PLAYERS;
-	}
-
-	void OnServerInitialized()
-	{
-		Debug.Log("Server Initializied");
-		//SpawnPlayer();
 	}
 
 
@@ -51,6 +47,38 @@ public class NetworkManager : MonoBehaviour {
 	 * and displays whatever this method calls with GUI
 	 * For buttons it will return true if the button was clicked 
 	**/
+
+	void OnGUI()
+	{
+		Rect backLocation = new Rect (Screen.width - BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT);
+		
+		if (splashState == States.Start){ //Start Screen
+			StartScreen();
+		} else if (splashState == States.CreateGame){ //Define the Game
+			CreateGameScreen();
+			
+			if (GUI.Button (backLocation, "Back")) {
+				splashState = States.Start;
+			}
+		} else if (splashState == States.ShowGames){ //Scroll View Screen
+			RoomScreen();
+			
+			if (GUI.Button (backLocation, "Back")) {
+				splashState = States.Start;
+			}
+			
+		} else if (splashState == States.Lobby){ //Lobby Screen
+			LobbyScreen(); 
+			
+			if (Network.isServer && GUI.Button (backLocation, "Back") ) {
+				splashState = States.Start;
+				Network.Disconnect();
+			} else if (Network.isClient && GUI.Button (backLocation, "Back") ){
+				splashState = States.ShowGames;
+				Network.Disconnect();
+			}
+		}
+	}
 
 	private States splashState = States.Start;
 	private const int BUTTON_WIDTH = 250;
@@ -130,26 +158,6 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 
-	[RPC] void SetupWorld(){
-		this.gameObject.SetActive(false);
-		SpawnPlayer ();
-
-		if (bgMusic.isPlaying) {
-			bgMusic.Stop ();
-		}
-
-
-		if (Network.isServer) {
-			SpawnAI (new Vector3 (-1, 1, 15));
-			SpawnAI (new Vector3 (-5, 1, 23));
-			SpawnAI (new Vector3 (7, 1, 26));
-			SpawnAI (new Vector3 (2, 1, 29));
-			SpawnAI (new Vector3 (12, 1, 31));
-
-			networkView.RPC ("SetupWorld", RPCMode.OthersBuffered);
-		}
-	}
-
 	void LobbyScreen(){
 		NetworkPlayer[] players = Network.connections;
 
@@ -174,38 +182,31 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 
-	void OnGUI()
-	{
-		Rect backLocation = new Rect (Screen.width - BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT);
-
-		if (splashState == States.Start){ //Start Screen
-			StartScreen();
-		} else if (splashState == States.CreateGame){ //Define the Game
-			CreateGameScreen();
-
-			if (GUI.Button (backLocation, "Back")) {
-				splashState = States.Start;
-			}
-		} else if (splashState == States.ShowGames){ //Scroll View Screen
-			RoomScreen();
-
-			if (GUI.Button (backLocation, "Back")) {
-				splashState = States.Start;
-			}
-
-		} else if (splashState == States.Lobby){ //Lobby Screen
-			LobbyScreen(); 
-
-			if (Network.isServer && GUI.Button (backLocation, "Back") ) {
-				splashState = States.Start;
-				Network.Disconnect();
-			} else if (Network.isClient && GUI.Button (backLocation, "Back") ){
-				splashState = States.ShowGames;
-				Network.Disconnect();
-			}
+	[RPC] void SetupWorld(){
+		this.gameObject.SetActive(false); //do not use this camera
+		SpawnPlayer (); //spwans my player
+		
+		if (bgMusic.isPlaying) {
+			bgMusic.Stop (); //stop music for now
 		}
-
+		
+		//initalize the score board on all machines
+		GameScore score = (GameScore) GameObject.Find("Town").GetComponent("GameScore");
+		score.StartGame ();
+		
+		if (Network.isServer) {
+			//server spawns all the AI
+			SpawnAI (new Vector3 (-1, 1, 15));
+			SpawnAI (new Vector3 (-5, 1, 23));
+			SpawnAI (new Vector3 (7, 1, 26));
+			SpawnAI (new Vector3 (2, 1, 29));
+			SpawnAI (new Vector3 (12, 1, 31));
+			
+			networkView.RPC ("SetupWorld", RPCMode.OthersBuffered);
+		}
 	}
+
+
 
 	/** Clitent methods **/
 
@@ -215,27 +216,38 @@ public class NetworkManager : MonoBehaviour {
 	{
 		MasterServer.RequestHostList(typeName);
 	}
-	
-	void OnMasterServerEvent(MasterServerEvent msEvent)
-	{
-		if (msEvent == MasterServerEvent.HostListReceived)
-			hostList = MasterServer.PollHostList();
-	}
 
 
 	private void JoinServer(HostData hostData)
 	{
 		Network.Connect(hostData);
 	}
-	
+
+	void Update(){
+		this.transform.RotateAround (Vector3.zero, Vector3.up, 0.2F); 
+	}
+
+	/**
+	 * Message Callbacks
+	 * */
+
+	void OnMasterServerEvent(MasterServerEvent msEvent)
+	{
+		if (msEvent == MasterServerEvent.HostListReceived)
+			hostList = MasterServer.PollHostList();
+	}
+
 	void OnConnectedToServer()
 	{
 		Debug.Log("Server Joined");
 		//SpawnPlayer();
 	}
-
-	void Update(){
-		this.transform.RotateAround (Vector3.zero, Vector3.up, 0.2F); 
+	
+	
+	void OnServerInitialized()
+	{
+		Debug.Log("Server Initializied");
+		//SpawnPlayer();
 	}
 
 

@@ -10,12 +10,10 @@ public class GunFire : MonoBehaviour {
 	private const double fireRate = 0.5; //only allow fire every 10 seconds
 	private double nextFire = 0.0; //time of next shot
 
-
-
 	void FireBullet(){
 		if (networkView.isMine) {
-			FireBulletFromLocation (bulletStart.position, bulletStart.forward);
-			networkView.RPC("FireBulletFromLocation", RPCMode.OthersBuffered, bulletStart.position, bulletStart.forward);
+			Rigidbody bulletClone = (Rigidbody) Network.Instantiate (bullet, bulletStart.position, bullet.transform.rotation, 1);
+			bulletClone.velocity = this.transform.forward * speed;
 		}
 	}
 
@@ -28,9 +26,4 @@ public class GunFire : MonoBehaviour {
 		}
 	}
 
-	[RPC] void FireBulletFromLocation(Vector3 bulletLoc, Vector3 forward){
-		Rigidbody bulletClone = (Rigidbody) Instantiate (bullet, bulletLoc, bullet.transform.rotation);
-		bulletClone.velocity = forward * speed;
-	}
-	
 }
