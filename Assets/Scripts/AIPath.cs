@@ -6,8 +6,13 @@ public class AIPath : MonoBehaviour {
 	public Vector3 destination;
 	// Use this for initialization
 
+	private const float MAX_SEARCH = 100.0f;
+
 	Vector3 getNewDestination(){
-		return new Vector3(Random.Range(-100.0F, 100.0F), 0, Random.Range(-100.0F, 100.0F));
+		Vector3 loc =  new Vector3(Random.Range(-MAX_SEARCH, MAX_SEARCH), 0, Random.Range(-MAX_SEARCH, MAX_SEARCH));
+		NavMeshHit hit;
+		NavMesh.SamplePosition(loc, out hit, MAX_SEARCH, 1);
+		return hit.position;
 	}
 
 	void Start () {
@@ -23,20 +28,34 @@ public class AIPath : MonoBehaviour {
 			agent.SetDestination (destination);
 		}
 	}
-
+	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
 		Vector3 syncDest = Vector3.zero;
+		Vector3 syncPos = Vector3.zero;
 		if (stream.isWriting && Network.isServer)
 		{
 			syncDest = destination;
+			syncPos = this.gameObject.transform.position;
 			stream.Serialize(ref syncDest);
+			stream.Serialize(ref syncPos);
 		}
 		else if (stream.isReading)
 		{
 			stream.Serialize(ref syncDest);
+			stream.Serialize(ref syncPos);
+
 			destination = syncDest;
-			agent.SetDestination (destination);
+			if (agent != null)
+				agent.SetDestination (destination);
+
+			Vector3 diffPos = new Vector3( this.gameObject.transform.position.x - syncPos.x, 
+			                              this.gameObject.transform.position.y - syncPos.y,
+			                              this.gameObject.transform.position.z - syncPos.z);
+			if (diffPos.sqrMagnitude >= 1){
+				this.gameObject.transform.position = syncPos;
+			}
 		}
+
 	}
 }
