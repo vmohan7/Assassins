@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour {
 
-	public GameScore score;
+	private GameScore score;
 
 	void Start(){
 		score = (GameScore) GameObject.Find("Town").GetComponent("GameScore");

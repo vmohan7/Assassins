@@ -57,16 +57,15 @@ public class GameScore : MonoBehaviour {
 				( (NetworkManager) networkCamera.GetComponent<NetworkManager>() ).SetGameOver(false);
 			}
 
-			//TODO: remove person from the field
 			capsule.GetComponent<BotControlScript>().GotKilled();
-
 		} else {
 			if (Network.isServer) //only maintain the score on the server
 				OnKillAgent( playerID );
-			Destroy( capsule );
+
+			capsule.GetComponent<AIControlScript>().GotKilled();
 		}
 
-		//TODO: add death animation to all AI or Player
+		//TODO: remove capsule from field
 
 	}
 

@@ -70,6 +70,10 @@ public class AIControlScript : MonoBehaviour
 		anim.SetLookAtWeight(lookWeight);					// set the Look At Weight - amount to use look at IK vs using the head's animation
 		
 	}
+
+	public void GotKilled(){
+		death = true;
+	}
 	/*
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{

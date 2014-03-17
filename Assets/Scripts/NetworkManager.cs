@@ -23,7 +23,7 @@ public class NetworkManager : MonoBehaviour {
 	public GameObject AIPrefab;
 
 	private const int PLANE_SIZE = 50;
-	private const int Y_OFFSET = 1;
+	private const int Y_OFFSET = 0;
 
 	private Vector3 SpawnLocation(){
 		Vector3 randomLocation = Random.insideUnitSphere * PLANE_SIZE;
@@ -37,7 +37,7 @@ public class NetworkManager : MonoBehaviour {
 		Vector3 location = SpawnLocation ();
 		location.y = Y_OFFSET;
 		GameObject rename = (GameObject) Network.Instantiate(playerPrefab, location, Quaternion.identity, 0);
-		((Player)rename.GetComponent ("Player")).SetID (id);
+		rename.GetComponent<Player>().SetID (id);
 	}
 
 	private const int NUM_AI = 50;
@@ -47,7 +47,7 @@ public class NetworkManager : MonoBehaviour {
 		Vector3 location = SpawnLocation ();
 		location.y = Y_OFFSET;
 		GameObject rename = (GameObject) Network.Instantiate(AIPrefab, location, Quaternion.identity, 0);
-		((Player)rename.GetComponent ("Player")).SetID (id);
+		rename.GetComponent<Player>().SetID (id);
 	}
 
 	[RPC] void SetupWorld(){
@@ -59,7 +59,7 @@ public class NetworkManager : MonoBehaviour {
 		}
 		
 		//initalize the score board on all machines
-		GameScore score = (GameScore) GameObject.Find("Town").GetComponent("GameScore");
+		GameScore score = (GameScore) GameObject.Find("Town").GetComponent<GameScore>();
 		score.StartGame ();
 		
 		if (Network.isServer) {
