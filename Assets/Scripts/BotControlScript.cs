@@ -10,22 +10,27 @@ public class BotControlScript : MonoBehaviour
 	[System.NonSerialized]					
 	public float lookWeight;					// the amount to transition when using head look
 	
-	[System.NonSerialized]
-	public Transform enemy;						// a transform to Lerp the camera to during head look
+	//[System.NonSerialized]
+	//public Transform enemy;						// a transform to Lerp the camera to during head look
 	
-	public float animSpeed = 1.5f;				// a public setting for overall animator animation speed
+	public float animSpeed = 5.0f;				// a public setting for overall animator animation speed
 	public float lookSmoother = 3f;				// a smoothing setting for camera motion
-	public bool useCurves;						// a setting for teaching purposes to show use of curves
+	//public bool useCurves;						// a setting for teaching purposes to show use of curves
 	public bool death;
 
 	
 	private Animator anim;							// a reference to the animator on the character
-	private AnimatorStateInfo currentBaseState;			// a reference to the current state of the animator, used for base layer
-	private AnimatorStateInfo layer2CurrentState;	// a reference to the current state of the animator, used for layer 2
-	private CapsuleCollider col;					// a reference to the capsule collider of the character
+	//private AnimatorStateInfo currentBaseState;			// a reference to the current state of the animator, used for base layer
+	//private AnimatorStateInfo layer2CurrentState;	// a reference to the current state of the animator, used for layer 2
+	//private CapsuleCollider col;					// a reference to the capsule collider of the character
 	private MouseLook mouse;
+
+	private float horz;
+	private float vert;
 	
 
+	/* Example States
+	 * 
 	static int idleState = Animator.StringToHash("Base Layer.Idle");	
 	static int locoState = Animator.StringToHash("Base Layer.Locomotion");			// these integers are references to our animator's states
 	static int jumpState = Animator.StringToHash("Base Layer.Jump");				// and are used to check state for various actions to occur
@@ -33,36 +38,97 @@ public class BotControlScript : MonoBehaviour
 	static int fallState = Animator.StringToHash("Base Layer.Fall");
 	static int rollState = Animator.StringToHash("Base Layer.Roll");
 	static int waveState = Animator.StringToHash("Layer2.Wave");
-	
+	*/
 
 	void Start ()
 	{
 		// initialising reference variables
 		anim = GetComponent<Animator>();					  
-		col = GetComponent<CapsuleCollider>();		
+		//col = GetComponent<CapsuleCollider>();		
 		mouse = GetComponent<MouseLook>();
 		if(anim.layerCount ==2)
 			anim.SetLayerWeight(1, 1);
 		death = false;
 	}
-	
+
 	
 	void FixedUpdate ()
 	{
-		//float h = Input.GetAxis("Horizontal");				// setup h variable as our horizontal input axis
-		float h = mouse.rotationX;
-		float v = Input.GetAxis("Vertical");				// setup v variables as our vertical input axis
+		if (networkView.isMine){
+			horz = mouse.rotationX;
+			vert = Input.GetAxis("Vertical");				// setup v variables as our vertical input axis
+		}
+
 		anim.SetBool("Death", death);
-		anim.SetFloat("Speed", v);							// set our animator's float parameter 'Speed' equal to the vertical input axis				
-		anim.SetFloat("Direction", h); 						// set our animator's float parameter 'Direction' equal to the horizontal input axis		
+		anim.SetFloat("Speed", vert);							// set our animator's float parameter 'Speed' equal to the vertical input axis				
+		anim.SetFloat("Direction", horz); 						// set our animator's float parameter 'Direction' equal to the horizontal input axis		
 		anim.speed = animSpeed;								// set the speed of our animator to the public variable 'animSpeed'
+
+		rigidbody.velocity = gameObject.transform.forward * animSpeed * vert;
 		anim.SetLookAtWeight(lookWeight);					// set the Look At Weight - amount to use look at IK vs using the head's animation
+
+	}
+
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+
+		bool d = false;
+		float v = 0.0F ,h = 0.0F;
+		Vector3 syncPos = Vector3.zero;
+		Quaternion rotation = Quaternion.identity;
+
+		if (stream.isWriting && networkView.isMine) {
+			d = death;
+			v = vert;
+			h = horz;
+			syncPos = this.gameObject.transform.position;
+			rotation = this.gameObject.transform.rotation;
+
+			stream.Serialize(ref d);
+			stream.Serialize(ref v);
+			stream.Serialize(ref h);
+			stream.Serialize(ref syncPos);
+			stream.Serialize(ref rotation);
+		}
+		else if (stream.isReading){
+
+			stream.Serialize(ref d);
+			stream.Serialize(ref v);
+			stream.Serialize(ref h);
+			stream.Serialize(ref syncPos);
+			stream.Serialize(ref rotation);
+
+			death = d;
+			vert = v;
+			horz = h;
+			if (mouse != null)
+				mouse.rotationX = horz;
+
+			//In case the positions get really out of sync
+			Vector3 diffPos = this.gameObject.transform.position - syncPos; 
+			Vector3 diffRot = this.gameObject.transform.rotation.eulerAngles - rotation.eulerAngles;
+
+			if (diffPos.sqrMagnitude >= 1){
+				this.gameObject.transform.position = syncPos;
+			}
+
+			if (diffRot.sqrMagnitude >= 1){	
+				this.gameObject.transform.rotation = rotation;
+			}
+		}
+	}
+
+}
+
+/*
+ * 		OTHER SAMPLE CODE
+ * 
+
 		currentBaseState = anim.GetCurrentAnimatorStateInfo(0);	// set our currentState variable to the current state of the Base Layer (0) of animation
 		
 		if(anim.layerCount ==2)		
 			layer2CurrentState = anim.GetCurrentAnimatorStateInfo(1);	// set our layer2CurrentState variable to the current state of the second Layer (1) of animation
-		
-		/*
+
 		// LOOK AT ENEMY
 		
 		// if we hold Alt..
@@ -170,6 +236,3 @@ public class BotControlScript : MonoBehaviour
 			anim.SetBool("Wave", false);
 		}
 	*/
-	}
-
-}

@@ -120,6 +120,7 @@ public class NetworkManager : MonoBehaviour {
 
 			if (GUI.Button (backLocation, "Back")) {
 				splashState = States.Start;
+				Application.LoadLevel(Application.loadedLevel);
 				Network.Disconnect();
 			}
 		} else if (splashState == States.GameWin){ //When last man standing
@@ -127,6 +128,7 @@ public class NetworkManager : MonoBehaviour {
 
 			if (GUI.Button (backLocation, "Back")) {
 				splashState = States.Start;
+				Application.LoadLevel(Application.loadedLevel);
 				Network.Disconnect();
 			}
 		}
