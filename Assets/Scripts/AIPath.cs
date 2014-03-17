@@ -17,6 +17,8 @@ public class AIPath : MonoBehaviour {
 
 	void Start () {
 		agent = GetComponent<NavMeshAgent>();
+		agent.updatePosition = true;
+		agent.updateRotation = true;
 		destination = this.gameObject.transform.position;
 		agent.SetDestination (destination);
 	}
@@ -26,6 +28,10 @@ public class AIPath : MonoBehaviour {
 		if (agent.remainingDistance < 3 && Network.isServer) {
 			destination = getNewDestination();
 			agent.SetDestination (destination);
+		}
+		bool death = GetComponent<AIControlScript> ().death;
+		if (death){
+			agent.Stop();
 		}
 	}
 	
