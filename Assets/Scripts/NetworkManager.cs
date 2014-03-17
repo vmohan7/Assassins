@@ -9,7 +9,7 @@ public class NetworkManager : MonoBehaviour {
 	/**
 	 * All the states enumerated as integers
 	 **/
-	enum States {Start, CreateGame, ShowGames, Lobby};
+	enum States {Start, CreateGame, ShowGames, Lobby, GameLost, GameWin};
 
 	/** Server methods **/
 	private const string typeName = "Assassins-City"; //the name of the game type
@@ -115,7 +115,25 @@ public class NetworkManager : MonoBehaviour {
 				splashState = States.ShowGames;
 				Network.Disconnect();
 			}
+		} else if (splashState == States.GameLost){ //When killed
+			GameOverScreen("Game Over - You got assassinated!");
+
+			if (GUI.Button (backLocation, "Back")) {
+				splashState = States.Start;
+				Network.Disconnect();
+			}
+		} else if (splashState == States.GameWin){ //When last man standing
+			GameOverScreen("Congratulations! YOU WIN!");
+
+			if (GUI.Button (backLocation, "Back")) {
+				splashState = States.Start;
+				Network.Disconnect();
+			}
 		}
+	}
+
+	public void SetGameOver(bool isWin){
+		splashState = isWin ? States.GameWin : States.GameLost; 
 	}
 
 	private States splashState = States.Start;
@@ -218,6 +236,16 @@ public class NetworkManager : MonoBehaviour {
 			GUI.Box (new Rect (Screen.width / 2 - BUTTON_WIDTH / 2, Screen.height / 2, BUTTON_WIDTH, BUTTON_HEIGHT), 
 			         "Waiting to Start");
 		}
+	}
+
+	void GameOverScreen(string message){
+		int BOX_WIDTH = Screen.width/2;
+		int BOX_HEIGHT = Screen.height/2;
+		int DATA_WIDTH = 50;
+
+		GUI.Box( new Rect(Screen.width/2 - BOX_WIDTH/2, Screen.height/2 - BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT), "" );
+		GUI.Label ( new Rect(Screen.width/2 - DATA_WIDTH/2, Screen.height/2 - BOX_HEIGHT/2, LABEL_WIDTH, LABEL_HEIGHT), 
+		          message );
 	}
 
 

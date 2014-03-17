@@ -10,20 +10,21 @@ public class Bullet : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision){
-		//destroys the bullet
-		Destroy (this.gameObject);
-
 		//assume that the server is the TRUE state
 		if (Network.isServer) {
 			if ( collision.gameObject.CompareTag( "Player" ) ){
-				networkView.RPC ("OnNetworkCollision", RPCMode.AllBuffered, true, networkView.owner.guid, collision.gameObject.name);
+				score.networkView.RPC ("OnNetworkCollision", RPCMode.AllBuffered, true, networkView.owner.guid, collision.gameObject.name);
 			} else if ( collision.gameObject.CompareTag( "AI" ) ){
-				networkView.RPC ("OnNetworkCollision", RPCMode.AllBuffered, false, networkView.owner.guid, collision.gameObject.name);
+				score.networkView.RPC ("OnNetworkCollision", RPCMode.AllBuffered, false, networkView.owner.guid, collision.gameObject.name);
 			}
 
 		}
+
+		//destroys the bullet
+		Destroy (this.gameObject);
 	}
 
+	/*
 	[RPC] void OnNetworkCollision(bool isHuman, string playerID, string collideObjectName){
 		Destroy( GameObject.Find(collideObjectName) );
 		if (isHuman) {
@@ -32,6 +33,7 @@ public class Bullet : MonoBehaviour {
 			score.OnKillAgent( playerID );
 		}
 	}
+	*/
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
