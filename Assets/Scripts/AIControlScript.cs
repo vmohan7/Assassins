@@ -66,7 +66,7 @@ public class AIControlScript : MonoBehaviour
 		anim.SetFloat("Direction", horz); 						// set our animator's float parameter 'Direction' equal to the horizontal input axis		
 		anim.speed = animSpeed;								// set the speed of our animator to the public variable 'animSpeed'
 		
-		rigidbody.velocity = gameObject.transform.forward * animSpeed * vert;
+		//rigidbody.velocity = gameObject.transform.forward * animSpeed * vert;
 		anim.SetLookAtWeight(lookWeight);					// set the Look At Weight - amount to use look at IK vs using the head's animation
 		
 	}
