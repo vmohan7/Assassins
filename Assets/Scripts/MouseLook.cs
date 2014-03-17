@@ -27,6 +27,7 @@ public class MouseLook : MonoBehaviour {
 
 	public float minimumY = -60F;
 	public float maximumY = 60F;
+	public float rotationX = 0;
 
 	float rotationY = 0F;
 
@@ -34,12 +35,12 @@ public class MouseLook : MonoBehaviour {
 	{
 		if (networkView.isMine) {
 			if (axes == RotationAxes.MouseXAndY) {
-					float rotationX = transform.localEulerAngles.y + Input.GetAxis ("Mouse X") * sensitivityX;
+				rotationX = transform.localEulerAngles.y + Input.GetAxis ("Mouse X") * sensitivityX;
 
-					rotationY += Input.GetAxis ("Mouse Y") * sensitivityY;
-					rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
+				rotationY += Input.GetAxis ("Mouse Y") * sensitivityY;
+				rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
 
-					transform.localEulerAngles = new Vector3 (-rotationY, rotationX, 0);
+				transform.localEulerAngles = new Vector3 (-rotationY, rotationX, 0);
 			} else if (axes == RotationAxes.MouseX) {
 					transform.Rotate (0, Input.GetAxis ("Mouse X") * sensitivityX, 0);
 			} else {
