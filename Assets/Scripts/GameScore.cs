@@ -54,23 +54,26 @@ public class GameScore : MonoBehaviour {
 
 			if ( capsule.networkView.owner.guid.Equals(Network.player.guid) ){
 				networkCamera.gameObject.SetActive(true);	
-				( (NetworkManager) networkCamera.GetComponent("NetworkManager") ).SetGameOver(false);
+				( (NetworkManager) networkCamera.GetComponent<NetworkManager>() ).SetGameOver(false);
 			}
+
+			//TODO: remove person from the field
+			capsule.GetComponent<BotControlScript>().GotKilled();
 
 		} else {
 			if (Network.isServer) //only maintain the score on the server
 				OnKillAgent( playerID );
+			Destroy( capsule );
 		}
 
-
-		Destroy( capsule );
+		//TODO: add death animation to all AI or Player
 
 	}
 
 	[RPC] void OnGameOver(string winner){
 		if ( winner.Equals(Network.player.guid) ) {
 			networkCamera.gameObject.SetActive(true);	
-			( (NetworkManager) networkCamera.GetComponent("NetworkManager") ).SetGameOver(true);
+			( (NetworkManager) networkCamera.GetComponent<NetworkManager>() ).SetGameOver(true);
 		}
 	}
 	

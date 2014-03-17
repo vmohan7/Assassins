@@ -13,18 +13,19 @@ public class BotControlScript : MonoBehaviour
 	//[System.NonSerialized]
 	//public Transform enemy;						// a transform to Lerp the camera to during head look
 	
-	public float animSpeed = 5.0f;				// a public setting for overall animator animation speed
-	public float lookSmoother = 3f;				// a smoothing setting for camera motion
+	public const float animSpeed = 1.5f;			// a public setting for overall animator animation speed
+	public const float moveSpeed = 5.0f;
+	public const float lookSmoother = 3f;				// a smoothing setting for camera motion
 	//public bool useCurves;						// a setting for teaching purposes to show use of curves
-	public bool death;
 
-	
+
 	private Animator anim;							// a reference to the animator on the character
 	//private AnimatorStateInfo currentBaseState;			// a reference to the current state of the animator, used for base layer
 	//private AnimatorStateInfo layer2CurrentState;	// a reference to the current state of the animator, used for layer 2
 	//private CapsuleCollider col;					// a reference to the capsule collider of the character
 	private MouseLook mouse;
 
+	private bool death;
 	private float horz;
 	private float vert;
 	
@@ -60,13 +61,20 @@ public class BotControlScript : MonoBehaviour
 		}
 
 		anim.SetBool("Death", death);
-		anim.SetFloat("Speed", vert);							// set our animator's float parameter 'Speed' equal to the vertical input axis				
-		anim.SetFloat("Direction", horz); 						// set our animator's float parameter 'Direction' equal to the horizontal input axis		
-		anim.speed = animSpeed;								// set the speed of our animator to the public variable 'animSpeed'
+		if (!death){
 
-		rigidbody.velocity = gameObject.transform.forward * animSpeed * vert;
-		anim.SetLookAtWeight(lookWeight);					// set the Look At Weight - amount to use look at IK vs using the head's animation
+			anim.SetFloat("Speed", vert);							// set our animator's float parameter 'Speed' equal to the vertical input axis				
+			anim.SetFloat("Direction", horz); 						// set our animator's float parameter 'Direction' equal to the horizontal input axis		
+			anim.speed = animSpeed;								// set the speed of our animator to the public variable 'animSpeed'
 
+			rigidbody.velocity = gameObject.transform.forward * moveSpeed * vert;
+			anim.SetLookAtWeight(lookWeight);					// set the Look At Weight - amount to use look at IK vs using the head's animation
+		}
+	}
+
+	public void GotKilled(){
+		death = true;
+		mouse.enabled = false;
 	}
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
