@@ -78,7 +78,7 @@ public class GameScore : MonoBehaviour {
 
 	IEnumerator FadeDeath(GameObject capsule, float animSpeed) {
 		Renderer render = capsule.GetComponentInChildren<Renderer> ();
-		yield return new WaitForSeconds (animSpeed);
+		yield return new WaitForSeconds (2*animSpeed);
 
 		//TODO: see why we are not fading away
 		for (float f = 1f; f >= 0; f -= 0.1f) {
