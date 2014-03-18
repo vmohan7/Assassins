@@ -40,7 +40,7 @@ public class NetworkManager : MonoBehaviour {
 		rename.GetComponent<Player>().SetID (id);
 	}
 
-	private const int NUM_AI = 50;
+	private const int NUM_AI = 200;
 
 	private void SpawnAI(string id)
 	{
