@@ -50,9 +50,8 @@ public class AIPath : MonoBehaviour {
 		/*NavMeshHit hit;
 
 
-		if (agent.Raycast (agent.nextPosition + agent.velocity * 2, out hit)){
+		if (agent.Raycast (agent.transform.position + agent.velocity * 2, out hit)){
 			if( hit.distance < 2 && Mathf.Abs (Vector3.Dot (hit.normal.normalized, agent.velocity.normalized)) < .5) {
-				Debug.Log (hit.mask);
 				onTempPath = true;
 				finalDestination = agent.destination;
 				Vector3 offset = Quaternion.AngleAxis (-45, agent.transform.up) * agent.velocity * 2;
