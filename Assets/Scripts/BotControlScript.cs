@@ -14,7 +14,7 @@ public class BotControlScript : MonoBehaviour
 	//public Transform enemy;						// a transform to Lerp the camera to during head look
 	
 	public const float animSpeed = 1.5f;			// a public setting for overall animator animation speed
-	public const float moveSpeed = 5.0f;
+	public const float moveSpeed = 1.5f;
 	public const float lookSmoother = 3f;				// a smoothing setting for camera motion
 	//public bool useCurves;						// a setting for teaching purposes to show use of curves
 
