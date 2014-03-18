@@ -56,17 +56,40 @@ public class GameScore : MonoBehaviour {
 				networkCamera.gameObject.SetActive(true);	
 				( (NetworkManager) networkCamera.GetComponent<NetworkManager>() ).SetGameOver(false);
 			}
-
-			capsule.GetComponent<BotControlScript>().GotKilled();
+			BotControlScript control = capsule.GetComponent<BotControlScript>();
+			if ( !control.isKilled() ){
+				control.GotKilled();
+				this.StartCoroutine( FadeDeath(capsule, BotControlScript.animSpeed) );
+			}
 		} else {
 			if (Network.isServer) //only maintain the score on the server
 				OnKillAgent( playerID );
 
-			capsule.GetComponent<AIControlScript>().GotKilled();
+			AIControlScript control = capsule.GetComponent<AIControlScript>();
+			if ( !control.isKilled() ){
+				control.GotKilled();
+				this.StartCoroutine( FadeDeath(capsule, AIControlScript.animSpeed) );
+			}
 		}
 
 		//TODO: remove capsule from field
 
+	}
+
+	IEnumerator FadeDeath(GameObject capsule, float animSpeed) {
+		Renderer render = capsule.GetComponentInChildren<Renderer> ();
+		yield return new WaitForSeconds (animSpeed);
+
+		//TODO: see why we are not fading away
+		for (float f = 1f; f >= 0; f -= 0.1f) {
+			Color c = render.material.color;
+			c.a = f;
+			render.material.color = c;
+			yield return new WaitForSeconds(0.0f);
+		}
+
+		Destroy (capsule);
+		yield return new WaitForSeconds(0.0f);
 	}
 
 	[RPC] void OnGameOver(string winner){

@@ -77,6 +77,10 @@ public class BotControlScript : MonoBehaviour
 		mouse.enabled = false;
 	}
 
+	public bool isKilled(){
+		return death;
+	}
+
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
 

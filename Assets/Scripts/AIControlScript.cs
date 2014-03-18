@@ -13,7 +13,7 @@ public class AIControlScript : MonoBehaviour
 	//[System.NonSerialized]
 	//public Transform enemy;						// a transform to Lerp the camera to during head look
 	
-	public float animSpeed = 5.0f;				// a public setting for overall animator animation speed
+	public const float animSpeed = 1.5f;				// a public setting for overall animator animation speed
 	public float lookSmoother = 3f;				// a smoothing setting for camera motion
 	//public bool useCurves;						// a setting for teaching purposes to show use of curves
 	public bool death;
@@ -73,6 +73,10 @@ public class AIControlScript : MonoBehaviour
 
 	public void GotKilled(){
 		death = true;
+	}
+
+	public bool isKilled(){
+		return death;
 	}
 	/*
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
