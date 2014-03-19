@@ -50,18 +50,6 @@ public class AIPath : MonoBehaviour {
 			}
 		}
 
-		Collider[] collide = Physics.OverlapSphere (agent.transform.position, SEARCH_RAD);
-		for (int i = 0; i < collide.Length ; i++) {
-			string tag = collide[i].gameObject.tag;
-			if (tag.Equals("Player") || tag.Equals("AI") ){
-				Vector3 deltaPos = collide[i].gameObject.transform.position - transform.position;
-				Vector3 force = (deltaPos.magnitude / SEARCH_RAD) * deltaPos.normalized;
-				agent.rigidbody.AddForce(force);
-			} else {
-
-			}
-		}
-
 		/*
 		if (agent.Raycast (agent.transform.position + agent.velocity * 2, out hit)){
 			//&& Mathf.Abs (Vector3.Dot (hit.normal.normalized, agent.velocity.normalized)) < .5
@@ -73,6 +61,20 @@ public class AIPath : MonoBehaviour {
 
 				NavMesh.SamplePosition(target, out hit, MAX_SEARCH, 1);
 				agent.SetDestination(hit.position);
+			}
+		}
+		*/
+
+		/*
+		Collider[] collide = Physics.OverlapSphere (agent.transform.position, SEARCH_RAD);
+		for (int i = 0; i < collide.Length ; i++) {
+			string tag = collide[i].gameObject.tag;
+			if (tag.Equals("Player") || tag.Equals("AI") ){
+				Vector3 deltaPos = collide[i].gameObject.transform.position - transform.position;
+				Vector3 force = (deltaPos.magnitude / SEARCH_RAD) * deltaPos.normalized;
+				agent.rigidbody.AddForce(force);
+			} else {
+
 			}
 		}
 		*/

@@ -81,12 +81,14 @@ public class GameScore : MonoBehaviour {
 		yield return new WaitForSeconds (2*animSpeed);
 
 		//TODO: see why we are not fading away
+		/*
 		for (float f = 1f; f >= 0; f -= 0.1f) {
 			Color c = render.material.color;
 			c.a = f;
-			render.material.color = c;
-			yield return new WaitForSeconds(0.0f);
+			render.material.SetColor("_Color", c);
+			yield return new WaitForSeconds(0.5f);
 		}
+		*/
 
 		Destroy (capsule);
 		yield return new WaitForSeconds(0.0f);
