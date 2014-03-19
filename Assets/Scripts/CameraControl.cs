@@ -38,7 +38,7 @@ public class CameraControl : MonoBehaviour {
 	//TODO check if this works
 	[RPC] void ChangeDayTime(float time){
 		skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
-		sky.TIME = Time; 
+		sky.TIME = time; 
 	}
 
 }
