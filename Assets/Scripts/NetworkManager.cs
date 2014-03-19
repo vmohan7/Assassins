@@ -320,5 +320,9 @@ public class NetworkManager : MonoBehaviour {
 		//SpawnPlayer();
 	}
 
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		//Just an override so that we do not sync the camera
+	}
 
 }
