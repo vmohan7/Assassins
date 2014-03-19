@@ -10,6 +10,7 @@ public class AIPath : MonoBehaviour {
 	// Use this for initialization
 
 	private const float MAX_SEARCH = 100.0f;
+	private const float SEARCH_RAD = 1.0f;
 
 	Vector3 getNewDestination(){
 		Vector3 loc =  new Vector3(Random.Range(-MAX_SEARCH, MAX_SEARCH), 0, Random.Range(-MAX_SEARCH, MAX_SEARCH));
@@ -26,32 +27,45 @@ public class AIPath : MonoBehaviour {
 		agent.SetDestination (destination);
 		onTempPath = false;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
+		bool death = GetComponent<AIControlScript> ().death;
+		if (death){
+			agent.Stop();
+			return;
+		}
+
 		if (!onTempPath){
 			if (agent.remainingDistance < 5 && Network.isServer) {
 				destination = getNewDestination();
 				agent.SetDestination (destination);
 			}
 		}
-	/*	else{
+		else{
 			if (agent.remainingDistance < .2 && Network.isServer){
 				destination = finalDestination;
 				onTempPath = false;
 				agent.SetDestination(destination);
 			}
-		}*/
-		bool death = GetComponent<AIControlScript> ().death;
-		if (death){
-			agent.Stop();
 		}
 
-		/*NavMeshHit hit;
+		Collider[] collide = Physics.OverlapSphere (agent.transform.position, SEARCH_RAD);
+		for (int i = 0; i < collide.Length ; i++) {
+			string tag = collide[i].gameObject.tag;
+			if (tag.Equals("Player") || tag.Equals("AI") ){
+				Vector3 deltaPos = collide[i].gameObject.transform.position - transform.position;
+				Vector3 force = (deltaPos.magnitude / SEARCH_RAD) * deltaPos.normalized;
+				agent.rigidbody.AddForce(force);
+			} else {
 
+			}
+		}
 
+		/*
 		if (agent.Raycast (agent.transform.position + agent.velocity * 2, out hit)){
-			if( hit.distance < 2 && Mathf.Abs (Vector3.Dot (hit.normal.normalized, agent.velocity.normalized)) < .5) {
+			//&& Mathf.Abs (Vector3.Dot (hit.normal.normalized, agent.velocity.normalized)) < .5
+			if( hit.distance < 2 ) {
 				onTempPath = true;
 				finalDestination = agent.destination;
 				Vector3 offset = Quaternion.AngleAxis (-45, agent.transform.up) * agent.velocity * 2;
@@ -60,7 +74,8 @@ public class AIPath : MonoBehaviour {
 				NavMesh.SamplePosition(target, out hit, MAX_SEARCH, 1);
 				agent.SetDestination(hit.position);
 			}
-		}*/
+		}
+		*/
 	}
 	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
