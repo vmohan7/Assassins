@@ -9,7 +9,7 @@ public class NetworkManager : MonoBehaviour {
 	/**
 	 * All the states enumerated as integers
 	 **/
-	enum States {Start, CreateGame, ShowGames, Lobby, GameLost, GameWin};
+	enum States {Start, CreateGame, ShowGames, Lobby, Loading, GameLost, GameWin};
 
 	/** Server methods **/
 	private const string typeName = "Assassins-City"; //the name of the game type
@@ -51,7 +51,8 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	[RPC] void SetupWorld(){
-		this.gameObject.SetActive(false); //do not use this camera
+		//this.gameObject.SetActive(false); //do not use this camera
+		splashState = States.Loading;
 		SpawnPlayer ( networkView.owner.guid ); //spawns my player
 		
 		if (bgMusic.isPlaying) {
@@ -67,9 +68,28 @@ public class NetworkManager : MonoBehaviour {
 			for(int i = 0; i < NUM_AI; i++){
 				SpawnAI ("" + i);
 			}
-			
+
+			this.StartCoroutine( LoadingScreen() );			
 			networkView.RPC ("SetupWorld", RPCMode.OthersBuffered);
 		}
+	}
+
+	[RPC] void DoneLoading(){
+		this.gameObject.SetActive(false); //do not use this camera
+
+		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+		for (int i = 0; i < players.Length; i++) {
+			players[i].GetComponent<CameraControl>().TurnOnCamera();
+		}
+
+	}
+
+
+
+	IEnumerator LoadingScreen() {
+		yield return new WaitForSeconds (10.0F); //TODO wait for all AI to be moving
+		networkView.RPC ("DoneLoading", RPCMode.AllBuffered);
+		yield return new WaitForSeconds (0.0F);	
 	}
 
 	private void StartServer()
@@ -115,6 +135,12 @@ public class NetworkManager : MonoBehaviour {
 				splashState = States.ShowGames;
 				Network.Disconnect();
 			}
+		} else if (splashState == States.Loading){ //Loading Screen 
+			int BOX_WIDTH = Screen.width/2;
+			int BOX_HEIGHT = Screen.height/2;
+			int DATA_WIDTH = LABEL_WIDTH + TEXT_WIDTH;
+			GUI.Box( new Rect(Screen.width/2 - BOX_WIDTH/2, Screen.height/2 - BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT), "" );
+			GUI.Label (new Rect(Screen.width/2 - DATA_WIDTH/2, Screen.height/2 - BOX_HEIGHT/2, LABEL_WIDTH, LABEL_HEIGHT), "Loading Game. Please Wait");
 		} else if (splashState == States.GameLost){ //When killed
 			GameOverScreen("Game Over - You got assassinated!");
 
