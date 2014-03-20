@@ -23,15 +23,6 @@ public class Bullet : MonoBehaviour {
 		//destroys the bullet
 		Destroy (this.gameObject);
 	}
-	
-	[RPC] void OnNetworkCollision(bool isHuman, string playerID, string collideObjectName){
-		Destroy( GameObject.Find(collideObjectName) );
-		if (isHuman) {
-			score.OnKillHuman( playerID );
-		} else {
-			score.OnKillAgent( playerID );
-		}
-	}
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
