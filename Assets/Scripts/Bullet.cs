@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour {
 
+	//CURRENTLY THIS CLASS IS NOT BEING USED
+
 	private GameScore score;
 
 	void Start(){

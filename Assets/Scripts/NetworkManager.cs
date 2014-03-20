@@ -88,7 +88,7 @@ public class NetworkManager : MonoBehaviour {
 
 
 	IEnumerator LoadingScreen() {
-		yield return new WaitForSeconds (10.0F); //TODO wait for all AI to be moving
+		yield return new WaitForSeconds (0.0F); //TODO wait for all AI to be moving
 		networkView.RPC ("DoneLoading", RPCMode.AllBuffered);
 		yield return new WaitForSeconds (0.0F);	
 	}

@@ -108,10 +108,12 @@ public class AIPath : MonoBehaviour {
 			if (agent != null)
 				agent.SetDestination (destination);
 
+			/*
 			Vector3 diffPos = this.gameObject.transform.position - syncPos;
 			if (diffPos.sqrMagnitude >= 1){
 				this.gameObject.transform.position = syncPos;
 			}
+			*/
 		}
 
 	}
