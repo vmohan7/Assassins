@@ -53,8 +53,8 @@ public class BotControlScript : MonoBehaviour
 		death = false;
 		ADS = false;
 
-		Transform mixTransform = transform.Find("Bip001 R Clavicle");
-		animation["ADS"].AddMixingTransform(mixTransform);
+		//Transform mixTransform = transform.Find("Bip001 R Clavicle");
+		//animation["ADS"].AddMixingTransform(mixTransform);
 	}
 
 	//public void ADS(){
