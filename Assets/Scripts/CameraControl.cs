@@ -25,18 +25,25 @@ public class CameraControl : MonoBehaviour {
 	}
 
 	private int TIME_TILL_NIGHT = 100;
+	private Color eveningColor = new Color(0.6745F, 0.6392F, 0.4980F);
+	private Color nightColor = new Color(0.0085F, 0.0085F, 0.0085F);
 	
 	IEnumerator TransitionNight() {
 		skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
 		for (int i = 0; i < TIME_TILL_NIGHT; i++) {
-			sky.TIME += ( 1.0F ) /TIME_TILL_NIGHT;
-			networkView.RPC ("ChangeDayTime", RPCMode.OthersBuffered, sky.TIME);
-			yield return new WaitForSeconds (1.0F); 
+			sky.TIME += ( .21F ) /TIME_TILL_NIGHT ;
+
+			float deltaTime = ( (float) i )/ TIME_TILL_NIGHT;
+			RenderSettings.ambientLight = Color.Lerp (eveningColor, nightColor, deltaTime);
+			networkView.RPC ("ChangeDayTime", RPCMode.OthersBuffered, sky.TIME, deltaTime);
+			yield return new WaitForSeconds (0.1F); 
 		}
 	}
-	//TODO check if this works
-	[RPC] void ChangeDayTime(float time){
+
+
+	[RPC] void ChangeDayTime(float time, float deltaTime){
 		skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
+		RenderSettings.ambientLight = Color.Lerp (eveningColor, nightColor, deltaTime);
 		sky.TIME = time; 
 	}
 

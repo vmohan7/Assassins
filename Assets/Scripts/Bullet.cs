@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour {
 
+	//CURRENTLY THIS CLASS IS NOT BEING USED
+
 	private GameScore score;
 
 	void Start(){
@@ -23,17 +25,6 @@ public class Bullet : MonoBehaviour {
 		//destroys the bullet
 		Destroy (this.gameObject);
 	}
-
-	/*
-	[RPC] void OnNetworkCollision(bool isHuman, string playerID, string collideObjectName){
-		Destroy( GameObject.Find(collideObjectName) );
-		if (isHuman) {
-			score.OnKillHuman( playerID );
-		} else {
-			score.OnKillAgent( playerID );
-		}
-	}
-	*/
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
