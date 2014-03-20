@@ -3,20 +3,24 @@ using System.Collections;
 
 public class CameraControl : MonoBehaviour {
 
-	private Camera myCam; 
+	//private Camera myCam; 
+	private GameObject rotatePnt;
 	
 	void Start(){
 		//do not use camera's that are not yours
 		//if (!networkView.isMine) {
-		myCam = this.GetComponentInChildren<Camera> ();
-		myCam.gameObject.SetActive(false);	
+		rotatePnt = this.transform.FindChild("RotatePoint").gameObject;
+		rotatePnt.SetActive (false);
+
+		//myCam = this.GetComponentInChildren<Camera> ();
+		//myCam.gameObject.SetActive(false);	
 		//}
 	}
 
 	public void TurnOnCamera(){
 		//do not use camera's that are not yours
 		if (networkView.isMine) {
-			myCam.gameObject.SetActive(true);	
+			rotatePnt.SetActive(true);	
 		}
 
 		if (Network.isServer) {

@@ -62,8 +62,10 @@ public class GameScore : MonoBehaviour {
 				this.StartCoroutine( FadeDeath(capsule, BotControlScript.animSpeed) );
 			}
 		} else {
-			if (Network.isServer) //only maintain the score on the server
+			if (Network.isServer){ //only maintain the score on the server
 				OnKillAgent( playerID );
+				networkView.RPC ("markPlayer", RPCMode.AllBuffered, playerID);
+			}
 
 			AIControlScript control = capsule.GetComponent<AIControlScript>();
 			if ( !control.isKilled() ){
@@ -74,6 +76,12 @@ public class GameScore : MonoBehaviour {
 
 		//TODO: remove capsule from field
 
+	}
+
+	[RPC] void markPlayer(string playerID){
+		GameObject player = GameObject.Find ("Network Controller" + playerID);
+		if (player != null)
+			player.GetComponentInChildren<MarkToCamera> ().gameObject.SetActive (true);
 	}
 
 	IEnumerator FadeDeath(GameObject capsule, float animSpeed) {
