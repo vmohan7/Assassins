@@ -17,6 +17,7 @@ public class AIControlScript : MonoBehaviour
 	public float lookSmoother = 3f;				// a smoothing setting for camera motion
 	//public bool useCurves;						// a setting for teaching purposes to show use of curves
 	public bool death;
+	public bool ADS;
 	
 	
 	private Animator anim;							// a reference to the animator on the character
@@ -51,6 +52,10 @@ public class AIControlScript : MonoBehaviour
 		if(anim.layerCount ==2)
 			anim.SetLayerWeight(1, 1);
 		death = false;
+		ADS = false;
+
+		Transform mixTransform = transform.Find("Bip001 R Clavicle");
+		animation["ADS"].AddMixingTransform(mixTransform);
 	}
 	
 	

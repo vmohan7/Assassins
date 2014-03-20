@@ -26,6 +26,7 @@ public class BotControlScript : MonoBehaviour
 	private MouseLook mouse;
 
 	private bool death;
+	public bool ADS;
 	private float horz;
 	private float vert;
 	
@@ -50,7 +51,15 @@ public class BotControlScript : MonoBehaviour
 		if(anim.layerCount ==2)
 			anim.SetLayerWeight(1, 1);
 		death = false;
+		ADS = false;
+
+		Transform mixTransform = transform.Find("Bip001 R Clavicle");
+		animation["ADS"].AddMixingTransform(mixTransform);
 	}
+
+	//public void ADS(){
+//		animation.CrossFade ("ADS");
+//	}
 
 	
 	void FixedUpdate ()
