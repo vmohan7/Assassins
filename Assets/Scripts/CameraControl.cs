@@ -21,6 +21,8 @@ public class CameraControl : MonoBehaviour {
 		//do not use camera's that are not yours
 		if (networkView.isMine) {
 			rotatePnt.SetActive(true);	
+			skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
+			sky.cam = rotatePnt.GetComponentInChildren<Camera> ();
 		}
 
 		if (Network.isServer) {
@@ -31,7 +33,8 @@ public class CameraControl : MonoBehaviour {
 	private int TIME_TILL_NIGHT = 100;
 	private Color eveningColor = new Color(0.6745F, 0.6392F, 0.4980F);
 	private Color nightColor = new Color(0.01F, 0.01F, 0.01F);
-	
+
+	//should only be called by the server
 	IEnumerator TransitionNight() {
 		skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
 		for (int i = 0; i < TIME_TILL_NIGHT; i++) {
