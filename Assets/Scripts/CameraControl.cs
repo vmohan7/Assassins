@@ -23,11 +23,12 @@ public class CameraControl : MonoBehaviour {
 			rotatePnt.SetActive(true);	
 			skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
 			sky.cam = rotatePnt.GetComponentInChildren<Camera> ();
+		
+			if (Network.isServer) {
+				this.StartCoroutine( TransitionNight() );	
+			}
 		}
 
-		if (Network.isServer) {
-			this.StartCoroutine( TransitionNight() );	
-		}
 	}
 
 	private int TIME_TILL_NIGHT = 100;
@@ -36,6 +37,7 @@ public class CameraControl : MonoBehaviour {
 
 	//should only be called by the server
 	IEnumerator TransitionNight() {
+		Debug.Log ("I am here");
 		skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
 		for (int i = 0; i < TIME_TILL_NIGHT; i++) {
 			sky.TIME += ( .21F ) /TIME_TILL_NIGHT ;
@@ -52,6 +54,8 @@ public class CameraControl : MonoBehaviour {
 		skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
 		RenderSettings.ambientLight = Color.Lerp (eveningColor, nightColor, deltaTime);
 		sky.TIME = time; 
+		Debug.Log("The time is: " + time);
+		Debug.Log("The delta time is: " + deltaTime);
 	}
 
 }
