@@ -4,7 +4,7 @@ using System.Collections;
 public class CameraControl : MonoBehaviour {
 
 	private Camera myCam; 
-
+	
 	void Start(){
 		//do not use camera's that are not yours
 		//if (!networkView.isMine) {
@@ -26,7 +26,7 @@ public class CameraControl : MonoBehaviour {
 
 	private int TIME_TILL_NIGHT = 100;
 	private Color eveningColor = new Color(0.6745F, 0.6392F, 0.4980F);
-	private Color nightColor = new Color(0.0085F, 0.0085F, 0.0085F);
+	private Color nightColor = new Color(0.01F, 0.01F, 0.01F);
 	
 	IEnumerator TransitionNight() {
 		skydomeScript2 sky = GameObject.Find ("Skydome controller").GetComponent<skydomeScript2> ();
