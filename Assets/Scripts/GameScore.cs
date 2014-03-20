@@ -82,6 +82,9 @@ public class GameScore : MonoBehaviour {
 		GameObject player = GameObject.Find ("Network Controller" + playerID);
 		if (player != null)
 			player.GetComponentInChildren<MarkToCamera> ().gameObject.SetActive (true);
+		else{
+			Debug.Log ("Could not find the player");
+		}
 	}
 
 	IEnumerator FadeDeath(GameObject capsule, float animSpeed) {

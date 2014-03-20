@@ -76,12 +76,13 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	[RPC] void DoneLoading(){
-		this.gameObject.SetActive(false); //do not use this camera
-
 		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 		for (int i = 0; i < players.Length; i++) {
+			//Debug.Log (players[i].GetComponent<CameraControl>());
 			players[i].GetComponent<CameraControl>().TurnOnCamera();
 		}
+
+		this.gameObject.SetActive(false); //do not use this camera
 
 	}
 
