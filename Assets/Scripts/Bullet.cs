@@ -23,8 +23,7 @@ public class Bullet : MonoBehaviour {
 		//destroys the bullet
 		Destroy (this.gameObject);
 	}
-
-	/*
+	
 	[RPC] void OnNetworkCollision(bool isHuman, string playerID, string collideObjectName){
 		Destroy( GameObject.Find(collideObjectName) );
 		if (isHuman) {
@@ -33,7 +32,6 @@ public class Bullet : MonoBehaviour {
 			score.OnKillAgent( playerID );
 		}
 	}
-	*/
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{

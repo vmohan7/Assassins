@@ -12,6 +12,7 @@ public class GunFire : MonoBehaviour {
 
 	void FireBullet(){
 		if (networkView.isMine) {
+			//TODO: Do a raycast
 			Rigidbody bulletClone = (Rigidbody) Network.Instantiate (bullet, bulletStart.position, bullet.transform.rotation, 1);
 			bulletClone.velocity = this.transform.forward * speed;
 		}

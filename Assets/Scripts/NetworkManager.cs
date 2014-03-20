@@ -40,7 +40,7 @@ public class NetworkManager : MonoBehaviour {
 		rename.GetComponent<Player>().SetID (id);
 	}
 
-	private const int NUM_AI = 200;
+	private const int NUM_AI_PER_PLAYER = 50;
 
 	private void SpawnAI(string id)
 	{
@@ -65,7 +65,8 @@ public class NetworkManager : MonoBehaviour {
 		
 		if (Network.isServer) {
 			//server spawns all the AI
-			for(int i = 0; i < NUM_AI; i++){
+			int numAI = NUM_AI_PER_PLAYER * (Network.connections.Length + 1);
+			for(int i = 0; i < numAI; i++){
 				SpawnAI ("" + i);
 			}
 
