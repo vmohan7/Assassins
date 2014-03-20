@@ -233,8 +233,9 @@ public class NetworkManager : MonoBehaviour {
 					                        , (buttonHeightComp * counter), BUTTON_WIDTH, BUTTON_HEIGHT), hostList[i].gameName)){
 						JoinServer(hostList[i]);
 						splashState = States.Lobby;
-						counter++;
 					}
+
+					counter++;
 				}
 			}
 
