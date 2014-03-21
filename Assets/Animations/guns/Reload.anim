@@ -6,9 +6,10 @@ AnimationClip:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Reload
-  serializedVersion: 3
+  serializedVersion: 4
   m_AnimationType: 1
   m_Compressed: 0
+  m_UseHighQualityCurve: 1
   m_RotationCurves:
   - curve:
       serializedVersion: 2
@@ -13758,17 +13759,20 @@ AnimationClip:
     path: Bip01/Bip01 Pelvis/Bip01 Spine/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01
       R Toe0
   m_FloatCurves: []
+  m_PPtrCurves: []
   m_SampleRate: 30
   m_WrapMode: 8
   m_Bounds:
     m_Center: {x: -.0981706977, y: 1.33713293, z: .288422704}
     m_Extent: {x: .40812099, y: .564352751, z: .735668421}
-  m_MuscleClipInfo:
+  m_AnimationClipSettings:
+    serializedVersion: 2
     m_StartTime: 0
     m_StopTime: 2.16666675
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
+    m_LoopTime: 0
     m_LoopBlend: 0
     m_LoopBlendOrientation: 0
     m_LoopBlendPositionY: 0
@@ -13778,7 +13782,6 @@ AnimationClip:
     m_KeepOriginalPositionXZ: 0
     m_HeightFromFeet: 0
     m_Mirror: 0
-    m_KeepAdditionalBonesAnimation: 1
   m_EditorCurves:
   - curve:
       serializedVersion: 2

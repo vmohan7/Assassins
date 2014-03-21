@@ -19,6 +19,7 @@ public class NetworkManager : MonoBehaviour {
 
 
 	public AudioSource bgMusic;
+	public AudioSource inGameMusic;
 	public GameObject playerPrefab;
 	public GameObject AIPrefab;
 
@@ -53,7 +54,7 @@ public class NetworkManager : MonoBehaviour {
 	[RPC] void SetupWorld(){
 		//this.gameObject.SetActive(false); //do not use this camera
 		splashState = States.Loading;
-		SpawnPlayer ( networkView.owner.guid ); //spawns my player
+		SpawnPlayer ( Network.player.guid ); //spawns my player
 		
 		if (bgMusic.isPlaying) {
 			bgMusic.Stop (); //stop music for now
@@ -76,6 +77,7 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	[RPC] void DoneLoading(){
+		inGameMusic.Play ();
 		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 		for (int i = 0; i < players.Length; i++) {
 			//Debug.Log (players[i].GetComponent<CameraControl>());

@@ -3,7 +3,7 @@ using System.Collections;
 
 // Require these components when using this script
 [RequireComponent(typeof (Animator))]
-[RequireComponent(typeof (CapsuleCollider))]
+[RequireComponent(typeof (BoxCollider))]
 [RequireComponent(typeof (Rigidbody))]
 public class AIControlScript : MonoBehaviour
 {

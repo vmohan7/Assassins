@@ -74,21 +74,20 @@ public class GameScore : MonoBehaviour {
 			}
 		}
 
-		//TODO: remove capsule from field
-
 	}
 
 	[RPC] void markPlayer(string playerID){
-		GameObject player = GameObject.Find ("Network Controller" + playerID);
-		if (player != null)
-			player.GetComponentInChildren<MarkToCamera> ().gameObject.SetActive (true);
-		else{
+		GameObject player = GameObject.Find (Player.PLAYER_NAME + playerID);
+		if (player != null){
+			player.transform.FindChild ("Mark").gameObject.SetActive(true);
+			//GetComponentInChildren<ParticleSystem>().startSize = 0.23F;
+		} else{
 			Debug.Log ("Could not find the player");
 		}
 	}
 
 	IEnumerator FadeDeath(GameObject capsule, float animSpeed) {
-		Renderer render = capsule.GetComponentInChildren<Renderer> ();
+		//Renderer render = capsule.GetComponentInChildren<Renderer> ();
 		yield return new WaitForSeconds (2*animSpeed);
 
 		//TODO: see why we are not fading away

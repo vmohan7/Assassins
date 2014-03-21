@@ -2,11 +2,11 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
-	private string agentID;
+
+	public const string PLAYER_NAME = "Network Player";
 
 	[RPC] public void SetID(string id){
-		agentID = id;
-		this.gameObject.name += agentID;
+		this.gameObject.name = PLAYER_NAME + id;
 
 		//TODO see why the first connection has a empty network id
 		if (networkView.isMine) {

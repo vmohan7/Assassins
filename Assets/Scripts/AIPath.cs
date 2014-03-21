@@ -5,7 +5,7 @@ public class AIPath : MonoBehaviour {
 	private NavMeshAgent agent;
 	public Vector3 destination;
 	private NavMeshPath tempPath;
-	private Vector3 finalDestination;
+	//private Vector3 finalDestination;
 	private bool onTempPath;
 	// Use this for initialization
 
@@ -44,7 +44,7 @@ public class AIPath : MonoBehaviour {
 		}
 		else{
 			if (agent.remainingDistance < .2 && Network.isServer){
-				destination = finalDestination;
+				//destination = finalDestination;
 				onTempPath = false;
 				agent.SetDestination(destination);
 			}
